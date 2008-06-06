@@ -46,8 +46,6 @@ int RLogVersion()
 void rlog::RLog_Register(PublishLoc *loc, RLogChannel *channel,
 	const char *format, ... )
 {
-    // prevent any other calls to Register for now..
-    loc->enabled = false;
     loc->channel = channel;
 
     RLogPublisher *pub = new RLogPublisher(loc);
@@ -65,7 +63,8 @@ void rlog::RLog_Register(PublishLoc *loc, RLogChannel *channel,
 	va_start (args, format);
 	RLogPublisher::PublishVA( loc, channel, format, args );
 	va_end( args );
-    }
+    } else
+	loc->enabled = false;
 } 
 
 /*
@@ -102,15 +101,12 @@ void _rMessageProxy::doLog(const char *format, va_list ap)
 {
     if(!loc->pub)
     {
-	// prevent any other calls to Register for now..
-	loc->enabled = false;
 	loc->publish = RLogPublisher::Publish;
 
 	RLogPublisher *pub = new RLogPublisher(loc);
 	loc->pub = pub;
 
-	if(pub->enabled())
-	    loc->enabled = true;
+	loc->enabled = pub->enabled();
     }
 
     if(loc->enabled)
