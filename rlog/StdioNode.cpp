@@ -109,7 +109,6 @@ StdioNode::StdioNode(int _fdOut, int flags)
 #ifdef USE_COLOURS
     colorize = (flags & OutputColor) && isatty( fdOut );
 #else
-    (void)colorizeIfTTY;
     colorize = false;
 #endif
     outputThreadId = (flags & OutputThreadId);
