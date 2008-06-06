@@ -48,18 +48,21 @@ using namespace rlog;
 
   is turned approximatly into this:
   @code
-     static PublishLoc _rl = {
-         enabled:  true,
-	 publish:  & rlog::RLog_Register ,
-	 pub: 0,
-	 component: "component",
-	 fileName: "myfile.cpp",
-	 functionName: "functionName()",
-	 lineNum: __LINE__,
-	 channel: 0
-     };
+     static bool _rl_enabled = true;
      if(_rL.enabled)
+     {
+	 static PublishLoc _rl = {
+	     enabled:  & _rl_enabled,
+	     publish:  & rlog::RLog_Register ,
+	     pub: 0,
+	     component: "component",
+	     fileName: "myfile.cpp",
+	     functionName: "functionName()",
+	     lineNum: __LINE__,
+	     channel: 0
+	 };
 	 (*_rl.publish)( &_rL, _RLDebugChannel, "hello world" );
+     }
   @endcode
 
   The RLogPublisher instance manages the contents of the static structure
@@ -68,11 +71,10 @@ using namespace rlog;
   enabled flag is set to false.
 
   The code produced contains one if statement, and with optimization comes
-  out to about 3 instructions on an x86 computer (not including the
-  function call).  If there are no subscribers to this message then that
-  is all the overhead, plus the memory usage for the structures
-  involved and the initial registration when the statement is first
-  encountered..
+  out to 2 instructions on an x86 computer for the unsubscribed case.
+  If there are no subscribers to this message then that is all the overhead,
+  plus the memory usage for the structures involved and the initial
+  registration when the statement is first encountered..
 
   @see RLogChannel
   @author Valient Gough
@@ -107,7 +109,12 @@ void
 RLogPublisher::setEnabled(bool active)
 {
     if(src)
-	src->enabled = active;
+    {
+	if(active)
+	    src->enable();
+	else
+	    src->disable();
+    }
 }
 
 void RLogPublisher::Publish( PublishLoc *loc, RLogChannel *channel,

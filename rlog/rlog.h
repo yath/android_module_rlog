@@ -152,7 +152,7 @@ namespace rlog
     */
     struct PublishLoc
     {
-	bool enabled;
+	bool *enabled;
 	// If the compiler supports printf attribute specification on function
 	// pointers, we'll use it here so that the compiler knows to check for
 	// proper printf formatting.  If it doesn't support it, then we'll
@@ -166,6 +166,12 @@ namespace rlog
 	const char *functionName;
 	int lineNum;
 	RLogChannel *channel;
+
+	inline void enable() { *enabled = true; }
+	inline void disable() { *enabled = false; }
+	inline bool isEnabled() { return *enabled; }
+
+	~PublishLoc();
     };
 
     /*! @fn RLog_Register

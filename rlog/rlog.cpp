@@ -43,6 +43,16 @@ int RLogVersion()
     return CURRENT_RLOG_VERSION;
 }
 
+PublishLoc::~PublishLoc()
+{
+    disable();
+    if(pub != NULL)
+    {
+	delete pub;
+	pub = NULL;
+    }
+}
+
 void rlog::RLog_Register(PublishLoc *loc, RLogChannel *channel,
 	const char *format, ... )
 {
@@ -55,7 +65,7 @@ void rlog::RLog_Register(PublishLoc *loc, RLogChannel *channel,
 
     if(pub->enabled())
     {
-	loc->enabled = true;
+	loc->enable();
 
 	// pass through to the publication function since it is active at
 	// birth.
@@ -64,7 +74,7 @@ void rlog::RLog_Register(PublishLoc *loc, RLogChannel *channel,
 	RLogPublisher::PublishVA( loc, channel, format, args );
 	va_end( args );
     } else
-	loc->enabled = false;
+	loc->disable();
 } 
 
 /*
@@ -106,10 +116,13 @@ void _rMessageProxy::doLog(const char *format, va_list ap)
 	RLogPublisher *pub = new RLogPublisher(loc);
 	loc->pub = pub;
 
-	loc->enabled = pub->enabled();
+	if(pub->enabled())
+	    loc->enable();
+	else
+	    loc->disable();
     }
 
-    if(loc->enabled)
+    if(loc->isEnabled())
 	RLogPublisher::PublishVA( loc, loc->channel, format, ap );
 }
 

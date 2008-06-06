@@ -17,26 +17,40 @@
  */
 
 
+/*! @def _rTriggerDef
+  Defines a static RLogPublisher and points it to the registration function for
+  the first call.
+  @internal
+*/
+#define _rTriggerDef(ID) \
+  static bool ID ## _enabled = true;
+
 /*! @def _rMessageDef
   Defines a static RLogPublisher and points it to the registration function for
   the first call.
   @internal
 */
 #define _rMessageDef(ID, COMPONENT) \
-  static rlog::PublishLoc ID ={true, &rlog::RLog_Register, 0, STR(COMPONENT), \
-      __FILE__, __FUNCTION__, __LINE__, 0};
+  static rlog::PublishLoc ID RLOG_SECTION = {& ID ## _enabled, \
+      &rlog::RLog_Register, 0, STR(COMPONENT), __FILE__, \
+      __FUNCTION__, __LINE__, 0};
 
 /*! @def _rMessageCall
   Checks if the RLogPublisher is enabled and publishes the message if so.
   @internal
 */
 #if HAVE_PRINTF_FP || !HAVE_PRINTF_ATTR
-#  define _rMessageCall(ID, CHANNEL, ...) \
-  if(unlikely(ID.enabled)) (*ID.publish)( &ID, CHANNEL, ##__VA_ARGS__ );
-#else // no PRINTF attributes..
-# define _rMessageCall(ID, CHANNEL, ...) \
-  if(unlikely(ID.enabled))  \
+#  define _rMessageCall(ID, COMPONENT, CHANNEL, ...) \
+  if(unlikely(ID ## _enabled)) \
   { \
+    _rMessageDef(ID, COMPONENT) \
+    (*ID.publish)( &ID, CHANNEL, ##__VA_ARGS__ ); \
+  }
+#else // no PRINTF attributes..
+# define _rMessageCall(ID, COMPONENT, CHANNEL, ...) \
+  if(unlikely(ID ## _enabled))  \
+  { \
+    _rMessageDef(ID, COMPONENT) \
     (*ID.publish)( &ID, CHANNEL, ##__VA_ARGS__ ); \
     rlog::__checkArgs( 0, ##__VA_ARGS__ ); \
   }
@@ -52,8 +66,8 @@
   @internal
 */
 #define _rMessage(ID, CHANNEL, ... ) \
-  do { _rMessageDef(ID, RLOG_COMPONENT) \
-       _rMessageCall(ID, CHANNEL, ##__VA_ARGS__ ) } while(0)
+  do { _rTriggerDef(ID) \
+       _rMessageCall(ID, RLOG_COMPONENT, CHANNEL, ##__VA_ARGS__ ) } while(0)
 
 /*! @addtogroup RLogMacros
   These macros are the primary interface for logging messages:
