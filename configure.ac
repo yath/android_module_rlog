@@ -22,13 +22,12 @@ AC_LANG(C++)
 #  ? : 0 : 0   =>  no new interfaces, but breaks apps
 #  ? :+1 : ?   =>  internal changes, nothing breaks, and might work better..
 #
-LIBRLOG_VERSION=4:4:3
+LIBRLOG_VERSION=5:0:0
 
 AC_SUBST(LIBRLOG_VERSION)
 AC_SUBST(PACKAGE_VERSION)
 
-dnl Automake doc recommends to do this only here. (Janos)
-AM_INIT_AUTOMAKE(rlog, 1.3.7) dnl searches for some needed programs
+AM_INIT_AUTOMAKE(rlog, 1.3.8) dnl searches for some needed programs
 
 dnl
 unset CDPATH
