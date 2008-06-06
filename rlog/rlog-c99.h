@@ -18,8 +18,7 @@
 
 
 /*! @def _rTriggerDef
-  Defines a static RLogPublisher and points it to the registration function for
-  the first call.
+  Defines a static log message trigger.  When enabled, logging code is called.
   @internal
 */
 #define _rTriggerDef(ID) \
