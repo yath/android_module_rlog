@@ -152,6 +152,7 @@ namespace rlog
     */
     struct PublishLoc
     {
+	bool enabled;
 	// If the compiler supports printf attribute specification on function
 	// pointers, we'll use it here so that the compiler knows to check for
 	// proper printf formatting.  If it doesn't support it, then we'll

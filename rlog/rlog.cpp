@@ -47,16 +47,17 @@ void rlog::RLog_Register(PublishLoc *loc, RLogChannel *channel,
 	const char *format, ... )
 {
     // prevent any other calls to Register for now..
-    loc->publish = 0;
+    loc->enabled = false;
     loc->channel = channel;
 
     RLogPublisher *pub = new RLogPublisher(loc);
 
     loc->pub = pub;
+    loc->publish = RLogPublisher::Publish;
 
     if(pub->enabled())
     {
-	loc->publish = RLogPublisher::Publish;
+	loc->enabled = true;
 
 	// pass through to the publication function since it is active at
 	// birth.
@@ -102,19 +103,18 @@ void _rMessageProxy::doLog(const char *format, va_list ap)
     if(!loc->pub)
     {
 	// prevent any other calls to Register for now..
-	loc->publish = 0;
+	loc->enabled = false;
+	loc->publish = RLogPublisher::Publish;
 
 	RLogPublisher *pub = new RLogPublisher(loc);
 	loc->pub = pub;
 
 	if(pub->enabled())
-	    loc->publish = RLogPublisher::Publish;
+	    loc->enabled = true;
     }
 
-    if(loc->publish != 0)
-    {
+    if(loc->enabled)
 	RLogPublisher::PublishVA( loc, loc->channel, format, ap );
-    }
 }
 
 void _rMessageProxy::log(RLogChannel *channel, const char *format, ...)

@@ -14,6 +14,7 @@ librlog_la_SOURCES = \
     RLogChannel.cpp \
     RLogNode.cpp \
     RLogPublisher.cpp \
+    RLogTime.cpp \
     StdioNode.cpp \
     SyslogNode.cpp
 
@@ -46,5 +47,5 @@ test_LDADD = librlog.la
 
 testlog_SOURCES = testlog.cpp
 testlog_LDADD = librlog.la
-testlog_CXXFLAGS = $(AM_CXXFLAGS) -DHAVE_TSC=@HAVE_TSC@
+testlog_CXXFLAGS = $(AM_CXXFLAGS)
 

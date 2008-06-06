@@ -49,6 +49,7 @@ using namespace rlog;
   is turned approximatly into this:
   @code
      static PublishLoc _rl = {
+         enabled:  true,
 	 publish:  & rlog::RLog_Register ,
 	 pub: 0,
 	 component: "component",
@@ -57,14 +58,14 @@ using namespace rlog;
 	 lineNum: __LINE__,
 	 channel: 0
      };
-     if(_rL.publish != 0)
+     if(_rL.enabled)
 	 (*_rl.publish)( &_rL, _RLDebugChannel, "hello world" );
   @endcode
 
   The RLogPublisher instance manages the contents of the static structure
   _rL.  When someone subscribes to it's message, then _rL.publish is set to
   point to the publishing function, and when there are no subscribers then
-  it is set to 0.
+  enabled flag is set to false.
 
   The code produced contains one if statement, and with optimization comes
   out to about 3 instructions on an x86 computer (not including the
@@ -106,7 +107,7 @@ void
 RLogPublisher::setEnabled(bool active)
 {
     if(src)
-	src->publish = active ? RLogPublisher::Publish : 0;
+	src->enabled = active;
 }
 
 void RLogPublisher::Publish( PublishLoc *loc, RLogChannel *channel,
@@ -121,10 +122,6 @@ void RLogPublisher::Publish( PublishLoc *loc, RLogChannel *channel,
 void RLogPublisher::PublishVA( PublishLoc *loc, RLogChannel *,
 	const char *format, va_list ap )
 {
-    // check just in case it got set to 0 before our call... unlikely
-    if(unlikely(loc->publish == 0))
-	return;
-
     RLogData data;
 
     data.publisher = loc;

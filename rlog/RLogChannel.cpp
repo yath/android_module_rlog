@@ -15,7 +15,8 @@
  * details.
  *
  */
-		                                                                                
+
+#include <cstring>
 
 #include "RLogChannel.h"
 #include "rlog.h"

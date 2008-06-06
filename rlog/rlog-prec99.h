@@ -17,16 +17,16 @@
  */
 
 #define _rMessageDef(ID, COMPONENT) \
-  static rlog::PublishLoc ID ={&rlog::RLog_Register, 0, STR(COMPONENT), \
+  static rlog::PublishLoc ID ={true, &rlog::RLog_Register, 0, STR(COMPONENT), \
       __FILE__, __FUNCTION__, __LINE__, 0};
 
 
 #if HAVE_PRINTF_FP || !HAVE_PRINTF_ATTR
 #  define _rMessageCall(ID, CHANNEL, ARGS...) \
-  if(unlikely(ID.publish!=0)) (*ID.publish)( &ID, CHANNEL, ##ARGS );
+  if(unlikely(ID.enabled)) (*ID.publish)( &ID, CHANNEL, ##ARGS );
 #else
 # define _rMessageCall(ID, CHANNEL, ARGS...) \
-  if(unlikely(ID.publish!=0))  \
+  if(unlikely(ID.enabled))  \
   { \
     (*ID.publish)( &ID, CHANNEL, ##ARGS ); \
     rlog::__checkArgs( 0, ##ARGS ); \

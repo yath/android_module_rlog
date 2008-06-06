@@ -135,7 +135,8 @@ int main(int argc, char **argv)
     testfunc();
     rlog_get_time(&end);
     cerr << "initialization time per msg = approx " 
-	<< rlog_time_diff(end,start) / WarnCount << " " RLOG_TIME_UNIT "\n";
+	<< rlog_time_diff(end,start) / WarnCount << " " 
+	<< rlog_time_unit() << "\n";
 
     cerr << endl;
     cerr << "calling testfunc() a few times with all dormant messages:\n";
@@ -146,7 +147,7 @@ int main(int argc, char **argv)
 	rlog_get_time(&end);
 	cerr << "overhead for each dormant msg = approx "
 	    << rlog_time_diff(end , start) / WarnCount 
-	    << " " RLOG_TIME_UNIT "\n";
+	    << " " << rlog_time_unit() << "\n";
     }
     cerr << endl;
 
@@ -160,7 +161,7 @@ int main(int argc, char **argv)
     
     cerr << "subscription overhead per msg = approx "
 	<< rlog_time_diff(end , start) / WarnCount 
-	<< " " RLOG_TIME_UNIT << "\n";
+	<< " " << rlog_time_unit() << "\n";
    
     
     cerr << endl;
@@ -176,7 +177,7 @@ int main(int argc, char **argv)
     
 	cerr << "overhead for each active msg = approx "
     	    << rlog_time_diff(end , start) / WarnCount 
-	    << " " RLOG_TIME_UNIT << "\n";
+	    << " " << rlog_time_unit() << "\n";
     }
 
     return 0;

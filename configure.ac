@@ -147,20 +147,7 @@ AC_SUBST(PREC99_VARIADAC_MACROS)
 
 
 # check if the computer has hardware cycle counter
-AC_MSG_CHECKING(if computer has hardware cycle counter)
-AC_COMPILE_IFELSE( [[
-#include <stdint.h>
-
-uint64_t hwClock()
-{
-    uint64_t rtc;
-    asm volatile("RDTSC" : "=A" (rtc));
-    return rtc;
-} ]] , [HAVE_TSC="1"
-	AC_MSG_RESULT(yes)],
-       [HAVE_TSC="0" 
-	AC_MSG_RESULT(no)])
-AC_SUBST(HAVE_TSC)
+AC_CHECK_HEADERS(asm/msr.h)
 
 AC_ARG_ENABLE(valgrind,
     AS_HELP_STRING([--disable-valgrind],

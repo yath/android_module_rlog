@@ -23,7 +23,7 @@
   @internal
 */
 #define _rMessageDef(ID, COMPONENT) \
-  static rlog::PublishLoc ID ={&rlog::RLog_Register, 0, STR(COMPONENT), \
+  static rlog::PublishLoc ID ={true, &rlog::RLog_Register, 0, STR(COMPONENT), \
       __FILE__, __FUNCTION__, __LINE__, 0};
 
 /*! @def _rMessageCall
@@ -32,10 +32,10 @@
 */
 #if HAVE_PRINTF_FP || !HAVE_PRINTF_ATTR
 #  define _rMessageCall(ID, CHANNEL, ...) \
-  if(unlikely(ID.publish!=0)) (*ID.publish)( &ID, CHANNEL, ##__VA_ARGS__ );
+  if(unlikely(ID.enabled)) (*ID.publish)( &ID, CHANNEL, ##__VA_ARGS__ );
 #else // no PRINTF attributes..
 # define _rMessageCall(ID, CHANNEL, ...) \
-  if(unlikely(ID.publish!=0))  \
+  if(unlikely(ID.enabled))  \
   { \
     (*ID.publish)( &ID, CHANNEL, ##__VA_ARGS__ ); \
     rlog::__checkArgs( 0, ##__VA_ARGS__ ); \

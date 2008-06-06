@@ -73,8 +73,8 @@ int main(int argc, char **argv)
     //stdLog.subscribeTo( FileNode::Lookup( __FILE__ ));
     
     rlog_get_time( &end );
-    rDebug("time for StdioNode subscription setup: %i " RLOG_TIME_UNIT, 
-	    (int)rlog_time_diff(end, start));
+    rDebug("time for StdioNode subscription setup: %i %s ", 
+	    (int)rlog_time_diff(end, start), rlog_time_unit());
 
     rDebug("in main()");
     rWarning("testing rWarning");
@@ -105,8 +105,8 @@ int main(int argc, char **argv)
     for(int i=0; i<maxLoop; ++i)
     {
 	//cerr << "in test loop" << endl;
-	rLog( RLTest, "loop %i of %i, sleepTime(1) = %i " RLOG_TIME_UNIT, 
-		i, maxLoop, static_cast<int>(sleepTime(1)));
+	rLog( RLTest, "loop %i of %i, sleepTime(1) = %i %s", 
+		i, maxLoop, static_cast<int>(sleepTime(1)), rlog_time_unit());
     }
     
     rlog_get_time( &end );
@@ -122,7 +122,7 @@ int main(int argc, char **argv)
 	rWarning("This message should never be seen!!");
     }
 
-    rDebug("leaving main(), total time = %lli " RLOG_TIME_UNIT, totalTime);
+    rDebug("leaving main(), total time = %lli %s ", totalTime, rlog_time_unit());
 
     return 0;
 }

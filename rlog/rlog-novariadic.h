@@ -34,7 +34,7 @@ private:
 };
 
 #define _rMessageDef(ID, COMPONENT) \
-  static rlog::PublishLoc ID ={&rlog::RLog_Register, 0, STR(COMPONENT), \
+  static rlog::PublishLoc ID ={true, &rlog::RLog_Register, 0, STR(COMPONENT), \
       __FILE__, __FUNCTION__, __LINE__, 0}
 
 #define _rMessage(ID, CHANNEL, COMPONENT) \
