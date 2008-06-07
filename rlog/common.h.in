@@ -52,6 +52,7 @@
 
 # define PRINTF(FMT,X) __attribute__ (( __format__ ( __printf__, FMT, X)))
 # define HAVE_PRINTF_ATTR 1
+# define RLOG_SECTION __attribute__ (( section("RLOG_DATA") ))
 
 #if __GNUC__ >= 3
 # define expect(foo, bar) __builtin_expect((foo),bar)
@@ -76,6 +77,8 @@
 */
 # define PRINTF(FMT,X)
 # define HAVE_PRINTF_ATTR 0
+# define RLOG_SECTION 
+
 /*!
 */
 # define   likely(x)  (x)
