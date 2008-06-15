@@ -1,6 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(rlog/rlog.h) dnl a source file from your sub dir
+AC_INIT
+AC_CONFIG_SRCDIR([rlog/rlog.h]) dnl a source file from your sub dir
 AC_CONFIG_AUX_DIR(config)
 AC_CONFIG_MACRO_DIR(config)
 
@@ -8,7 +9,7 @@ dnl This ksh/zsh feature conflicts with `cd blah ; pwd`
 unset CDPATH
 
 dnl Checking host/target/build systems, for make, install etc.
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_TARGET
 dnl Perform program name transformation
 AC_ARG_PROGRAM
 
@@ -41,7 +42,7 @@ fi
 
 dnl without this order in this file, automake will be confused!
 dnl
-AM_CONFIG_HEADER(config.h)
+AC_CONFIG_HEADERS([config.h])
 
 dnl create only shared libtool-libraries
 AC_ENABLE_SHARED(yes)
@@ -52,7 +53,7 @@ AC_ENABLE_STATIC(no)
 
 dnl checks for programs.
 dnl first check for c/c++ compilers
-AC_LANG_CPLUSPLUS
+AC_LANG([C++])
 AC_PROG_CXX
 AC_PROG_LIBTOOL
 
@@ -146,7 +147,15 @@ AC_SUBST(PREC99_VARIADAC_MACROS)
 
 
 # check if the computer has hardware cycle counter
-AC_CHECK_HEADERS(asm/msr.h)
+AC_ARG_ENABLE(rdtsc,
+    AS_HELP_STRING([--enable-rdtsc],
+	    [use rdtsc for benchmarking rlog in test programs]),
+    with_rdtsc=$enableval,with_rdtsc="no")
+if test "x$with_rdtsc" = "xyes"; then
+    AC_DEFINE([USE_RDTSC], [1], [Define to use RDTSC calls for benchmark test])
+else
+    AC_DEFINE([USE_RDTSC], [0], [Define to use RDTSC calls for benchmark test])
+fi
 
 AC_ARG_ENABLE(valgrind,
     AS_HELP_STRING([--disable-valgrind],
@@ -185,12 +194,13 @@ LDFLAGS="$LDFLAGS $PTHREAD_LIBS $USER_LDFLAGS"
 CXXFLAGS="$CXXFLAGS $PTHREAD_CFLAGS $USER_INCLUDES"
 
 AC_SUBST(AUTODIRS)
-AC_OUTPUT( Makefile \
+AC_CONFIG_FILES([Makefile \
 	rlog/Makefile \
 	docs/Makefile \
 	config/Makefile \
 	rlog/common.h \
 	librlog.pc \
 	rlog.spec \
-	makedist2.sh)
+	makedist2.sh])
+AC_OUTPUT
 

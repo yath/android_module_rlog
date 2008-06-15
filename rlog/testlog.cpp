@@ -140,16 +140,25 @@ int main(int argc, char **argv)
 
     cerr << endl;
     cerr << "calling testfunc() a few times with all dormant messages:\n";
+    bool warn = false;
     for(int i=0; i<4; ++i)
     {
 	rlog_get_time(&start);
 	testfunc();
 	rlog_get_time(&end);
-	cerr << "overhead for each dormant msg = approx "
-	    << rlog_time_diff(end , start) / WarnCount 
-	    << " " << rlog_time_unit() << "\n";
+	double avg = (double)rlog_time_diff(end, start) / (double)WarnCount;
+	cerr << "overhead for each dormant msg averaged "
+	    << avg << " " << rlog_time_unit() << "\n";
+	if(avg < 1)
+	    warn = true;
     }
     cerr << endl;
+
+    if(warn)
+    {
+	cerr << "Note: reconfigure with --enable-rdtsc to use more "
+	    << "precise timer " << endl;
+    }
 
     // now enable a subscriber and time how long it takes both to subscribe,
     // and to actually publish the messages..

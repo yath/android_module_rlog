@@ -82,33 +82,40 @@ void sleep(int seconds)
 
 #include <sys/time.h>
 
-#ifdef HAVE_ASM_MSR_H
+#if USE_RDTSC
 
 typedef uint32_t u32; 
 typedef uint64_t u64; 
-#include <asm/msr.h> 
 
 const char * rlog_time_unit()
 {
     return "clock cycles";
 }
 
-void rlog_get_time(uint64_t *pt)
+__inline__ uint64_t rdtscll() 
 {
-    rdtscll( *pt );
+    uint32_t lo, hi;
+    /* We cannot use "=A", since this would use %rax on
+     * x86_64 */
+    __asm__ __volatile__ ("rdtsc" : "=a" (lo), "=d" (hi));
+    return (uint64_t)hi << 32 | lo;
+}
+
+void rlog_get_time(rlog_time *pt)
+{
+    // stuff it into a timeval struct
+    pt->tv_sec = rdtscll( );
+    pt->tv_usec = 0;
 }
 
 rlog_time_interval rlog_time_diff(const rlog_time &end, const rlog_time &start )
 {
-    return end - start;
+    return end.tv_sec - start.tv_sec;
 }
 
 #else // !HAVE_TSC
 
 #include <unistd.h>
-
-typedef timeval rlog_time;
-typedef long rlog_time_interval;
 
 const char * rlog_time_unit()
 {

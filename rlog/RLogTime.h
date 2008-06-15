@@ -34,14 +34,15 @@ void sleep(int seconds);
 #else
 
 #include <stdint.h>
+#include <sys/time.h>
 #include <unistd.h> // for sleep()
 
-typedef uint64_t rlog_time;
+typedef timeval rlog_time;
 typedef int64_t rlog_time_interval;
 
 #endif
 
-void rlog_get_time(uint64_t *pt);
+void rlog_get_time(rlog_time *pt);
 rlog_time_interval rlog_time_diff( const rlog_time &end, const rlog_time &start );
 
 const char *rlog_time_unit();
