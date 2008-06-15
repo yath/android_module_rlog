@@ -27,6 +27,8 @@
 #include "RLogChannel.h"
 #include "Error.h"
 
+#include "Lock.h"
+
 #define UNUSED(x) (void)(x)
 
 #if USE_VALGRIND
@@ -56,6 +58,9 @@ PublishLoc::~PublishLoc()
 void rlog::RLog_Register(PublishLoc *loc, RLogChannel *channel,
 	const char *format, ... )
 {
+    static Mutex registrationLock;
+    Lock lock( &registrationLock );
+
     loc->channel = channel;
 
     RLogPublisher *pub = new RLogPublisher(loc);
