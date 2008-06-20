@@ -67,7 +67,6 @@ void rlog::RLog_Register(PublishLoc *loc, RLogChannel *channel,
 	if(loc->pub == NULL)
 	{
 	    loc->channel = channel;
-	    loc->publish = RLogPublisher::Publish;
 
 	    RLogPublisher *pub = new RLogPublisher(loc);
 	    loc->pub = pub;
@@ -76,6 +75,8 @@ void rlog::RLog_Register(PublishLoc *loc, RLogChannel *channel,
 		loc->enable();
 	    else
 		loc->disable();
+	    
+	    loc->publish = RLogPublisher::Publish;
 	}
     }
 
