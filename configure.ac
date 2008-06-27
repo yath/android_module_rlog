@@ -28,7 +28,7 @@ LIBRLOG_VERSION=5:0:0
 AC_SUBST(LIBRLOG_VERSION)
 AC_SUBST(PACKAGE_VERSION)
 
-AM_INIT_AUTOMAKE(rlog, 1.3.8) dnl searches for some needed programs
+AM_INIT_AUTOMAKE(rlog, 1.4) dnl searches for some needed programs
 
 dnl
 unset CDPATH
@@ -98,6 +98,32 @@ else
     HAVE_PRINTF_FP_PROTOTYPE="0"
 fi
 AC_SUBST(HAVE_PRINTF_FP_PROTOTYPE)
+
+
+# check if we can use printf attribute on a function..
+AC_MSG_CHECKING(if section attribute works)
+AC_COMPILE_IFELSE( [[
+        extern void test(int val);
+
+        int main()
+        {
+            static int foo __attribute__ (( section("RLOG_DATA") )) = 0;
+
+            test( foo );
+
+            return 0;
+        }
+     ]],
+    with_section_attr="yes",
+    with_section_attr="no")
+AC_MSG_RESULT($with_section_attr)
+if test "x$with_section_attr" = "xyes"; then
+    HAVE_GCC_SECTION_ATTRIBUTE="1"
+else
+    HAVE_GCC_SECTION_ATTRIBUTE="0"
+fi
+AC_SUBST(HAVE_GCC_SECTION_ATTRIBUTE)
+
 
 AC_ARG_ENABLE(vararg,
     AS_HELP_STRING([--disable-vararg],

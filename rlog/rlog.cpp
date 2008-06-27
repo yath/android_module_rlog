@@ -59,35 +59,27 @@ void rlog::RLog_Register(PublishLoc *loc, RLogChannel *channel,
 	const char *format, ... )
 {
     static Mutex registrationLock;
+    Lock lock( &registrationLock );
 
-    // prevent race with multiple threads registering the same log statement
+    loc->channel = channel;
+
+    RLogPublisher *pub = new RLogPublisher(loc);
+
+    loc->pub = pub;
+    loc->publish = RLogPublisher::Publish;
+
+    if(pub->enabled())
     {
-	Lock lock( &registrationLock );
+	loc->enable();
 
-	if(loc->pub == NULL)
-	{
-	    loc->channel = channel;
-
-	    RLogPublisher *pub = new RLogPublisher(loc);
-	    loc->pub = pub;
-
-	    if(pub->enabled())
-		loc->enable();
-	    else
-		loc->disable();
-	    
-	    loc->publish = RLogPublisher::Publish;
-	}
-    }
-
-    if(loc->isEnabled())
-    {
-	// pass through to the publication function since it is active
+	// pass through to the publication function since it is active at
+	// birth.
 	va_list args;
 	va_start (args, format);
 	RLogPublisher::PublishVA( loc, channel, format, args );
 	va_end( args );
-    } 
+    } else
+	loc->disable();
 } 
 
 /*

@@ -52,7 +52,12 @@
 
 # define PRINTF(FMT,X) __attribute__ (( __format__ ( __printf__, FMT, X)))
 # define HAVE_PRINTF_ATTR 1
+
+#if @HAVE_GCC_SECTION_ATTRIBUTE@
 # define RLOG_SECTION __attribute__ (( section("RLOG_DATA") ))
+#else
+# define RLOG_SECTION 
+#endif
 
 #if __GNUC__ >= 3
 # define expect(foo, bar) __builtin_expect((foo),bar)

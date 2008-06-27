@@ -16,14 +16,6 @@
  *
  */
 
-
-/*! @def _rTriggerDef
-  Defines a static log message trigger.  When enabled, logging code is called.
-  @internal
-*/
-#define _rTriggerDef(ID) \
-  static bool ID ## _enabled = true;
-
 /*! @def _rMessageDef
   Defines a static RLogPublisher and points it to the registration function for
   the first call.
@@ -40,6 +32,7 @@
 */
 #if HAVE_PRINTF_FP || !HAVE_PRINTF_ATTR
 #  define _rMessageCall(ID, COMPONENT, CHANNEL, ...) \
+  static bool ID ## _enabled = true; \
   if(unlikely(ID ## _enabled)) \
   { \
     _rMessageDef(ID, COMPONENT) \
@@ -47,6 +40,7 @@
   }
 #else // no PRINTF attributes..
 # define _rMessageCall(ID, COMPONENT, CHANNEL, ...) \
+  static bool ID ## _enabled = true; \
   if(unlikely(ID ## _enabled))  \
   { \
     _rMessageDef(ID, COMPONENT) \
@@ -65,8 +59,7 @@
   @internal
 */
 #define _rMessage(ID, CHANNEL, ... ) \
-  do { _rTriggerDef(ID) \
-       _rMessageCall(ID, RLOG_COMPONENT, CHANNEL, ##__VA_ARGS__ ) } while(0)
+  do { _rMessageCall(ID, RLOG_COMPONENT, CHANNEL, ##__VA_ARGS__ ) } while(0)
 
 /*! @addtogroup RLogMacros
   These macros are the primary interface for logging messages:
