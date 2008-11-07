@@ -187,7 +187,7 @@ RLogChannel *rlog::GetComponentChannel( const char *component,
 	const char *next = strchr( path , '/' );
 	size_t len = next ? next - path : strlen( path );
 
-	if(len > 1)
+	if(len >= 1)
 	{
 	    string pathEl( path, len );
 
