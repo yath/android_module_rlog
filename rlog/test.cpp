@@ -32,6 +32,7 @@ using namespace rlog;
 using namespace std;
 
 static RLogChannel *RLTest = RLOG_CHANNEL( "test/heartbeat" );
+static RLogChannel *RLTest2 = RLOG_CHANNEL( "foo/a/b/something" );
 
 rlog_time_interval sleepTime(int seconds)
 {
@@ -64,6 +65,7 @@ int main(int argc, char **argv)
     stdLog.subscribeTo( GetGlobalChannel("warning") );
     stdLog.subscribeTo( RLOG_CHANNEL("error") );
     stdLog.subscribeTo( GetGlobalChannel("test") );
+    stdLog.subscribeTo( GetGlobalChannel("foo/a/b") );
 
     // subscribe to *everything* (root type node corresponds to all types, and
     // all publications belong to a type)
@@ -108,8 +110,10 @@ int main(int argc, char **argv)
 	rLog( RLTest, "loop %i of %i, sleepTime(1) = %i %s", 
 		i, maxLoop, static_cast<int>(sleepTime(1)), rlog_time_unit());
     }
-    
+   
     rlog_get_time( &end );
+
+    rLog(RLTest2, "single-char path test");
 
     rlog_time_interval totalTime = rlog_time_diff(end, start);
 
