@@ -5,7 +5,7 @@ docdir = $(datadir)/doc
 pkgdocdir = $(docdir)/$(PACKAGE)
 #pkghtmldir = $(pkgdocdir)/html
 
-
+if BUILD_DOCS
 # have both html and html/index.html to force build of index.html if necessary
 EXTRA_DIST = latex/refman.pdf html html/index.html $(SOURCES)
 
@@ -15,7 +15,6 @@ pkgdoc_DATA = \
 #pkghtml_DATA = \
 #    html/*
 
-if BUILD_DOCS
 latex/refman.pdf: html/index.html
 	-cd latex && make
 
@@ -26,7 +25,6 @@ html/index.html: ../Doxyfile $(SOURCES)
 clean-local:
 	-rm -rf html
 	-rm -rf latex
-endif
 
 all-local: html/index.html
 
@@ -35,4 +33,5 @@ install-data-local: all-local
 	/bin/sh ../mkinstalldirs ${DESTDIR}${pkgdocdir}/html
 	install html/* ${DESTDIR}${pkgdocdir}/html
 
+endif
 
