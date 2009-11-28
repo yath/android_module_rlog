@@ -53,7 +53,9 @@
 # define PRINTF(FMT,X) __attribute__ (( __format__ ( __printf__, FMT, X)))
 # define HAVE_PRINTF_ATTR 1
 
-#if @HAVE_GCC_SECTION_ATTRIBUTE@
+#if @HAVE_GCC_DATA_SECTION_ATTRIBUTE@
+# define RLOG_SECTION __attribute__ (( section("__DATA, RLOG_DATA") ))
+#elif @HAVE_GCC_SIMPLE_SECTION_ATTRIBUTE@
 # define RLOG_SECTION __attribute__ (( section("RLOG_DATA") ))
 #else
 # define RLOG_SECTION 

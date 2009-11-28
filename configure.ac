@@ -100,30 +100,46 @@ fi
 AC_SUBST(HAVE_PRINTF_FP_PROTOTYPE)
 
 
-# check if we can use printf attribute on a function..
-AC_MSG_CHECKING(if section attribute works)
-AC_COMPILE_IFELSE( [[
-        extern void test(int val);
+AC_ARG_ENABLE(variable-clustering,
+    AS_HELP_STRING([--disable-variable-clustering],
+	    [disables rlog variable clustering via separate data section]),
+    with_var_cluster=$enableval,with_var_cluster="test")
 
-        int main()
-        {
-            static int foo __attribute__ (( section("RLOG_DATA") )) = 0;
+        
+HAVE_GCC_DATA_SECTION_ATTRIBUTE="0"
+HAVE_GCC_SIMPLE_SECTION_ATTRIBUTE="0"
+if test "x$with_var_cluster" = "xtest"; then
+    # check if we can specify data section for variables
+    AC_MSG_CHECKING(if section attribute works)
+    with_section_attr="no"
+    AC_COMPILE_IFELSE( [[
+            extern void test(int val);
 
-            test( foo );
+            int main()
+            {
+                static int foo __attribute__ (( section("__DATA, RLOG_DATA") )) = 0;
+                test( foo );
+                return 0;
+            }
+         ]],
+        [[HAVE_GCC_DATA_SECTION_ATTRIBUTE="1"
+          with_section_attr="yes"]])
+    AC_COMPILE_IFELSE( [[
+            extern void test(int val);
 
-            return 0;
-        }
-     ]],
-    with_section_attr="yes",
-    with_section_attr="no")
-AC_MSG_RESULT($with_section_attr)
-if test "x$with_section_attr" = "xyes"; then
-    HAVE_GCC_SECTION_ATTRIBUTE="1"
-else
-    HAVE_GCC_SECTION_ATTRIBUTE="0"
+            int main()
+            {
+                static int foo __attribute__ (( section("RLOG_DATA") )) = 0;
+                test( foo );
+                return 0;
+            }
+         ]],
+        [[HAVE_GCC_SIMPLE_SECTION_ATTRIBUTE="1"
+          with_section_attr="yes"]])
+    AC_MSG_RESULT($with_section_attr)
 fi
-AC_SUBST(HAVE_GCC_SECTION_ATTRIBUTE)
-
+AC_SUBST(HAVE_GCC_DATA_SECTION_ATTRIBUTE)
+AC_SUBST(HAVE_GCC_SIMPLE_SECTION_ATTRIBUTE)
 
 AC_ARG_ENABLE(vararg,
     AS_HELP_STRING([--disable-vararg],

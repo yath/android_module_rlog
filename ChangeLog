@@ -1,19 +1,45 @@
 
-Fri Jun  6 14:44:13 PDT 2008  Valient Gough <vgough@pobox.com>
+Sat Nov 28 2009 Valient Gough <vgough@pobox.com>
+	* fix printf arg warning
+	* add configure argument to disable variable clustering
+	* check for two-argument section attribute support
+
+Sun Nov 22 2009 Valient Gough <vgough@pobox.com>
+	* avoid doc build failure if not building docs
+
+Tue Aug 18 2009 Valient Gough <vgough@pobox.com>
+	* single char path length test
+
+Thu Nov 6 2008 Valient Gough <vgough@pobox.com>
+	* fix off-by-one which cause single-char paths to be ignored
+
+Fri Jun 27 2008 Valient Gough <vgough@pobox.com>
+	* simplify macros in rlog-c99
+	* add test for gcc section attribute to configure
+
+Sat Jun 14 2008 Valient Gough <vgough@pobox.com>
+	* add warning if timer isn't accurate enough to get good benchmark
+	  results
+	* no longer use RDTSC function unless specifically requested during
+	  configuration
+	* update configure using autoupdate
+	* bump version to 1.4
+	* add global lock to RLog_Register function, to avoid race in threaded
+	  apps
+
+Sat Jun 7 2008 Valient Gough <vgough@pobox.com>
+	* add missing RLOG_SECTION definition
+
+Fri Jun 6 2008 Valient Gough <vgough@pobox.com>
+	* update changelog
 	* bump version to 1.3.8, lib version to 5
-
-Fri Jun  6 14:33:37 PDT 2008  Valient Gough <vgough@pobox.com>
 	* import Windows VC80 patch from David Wolfe
-
-Fri Jun  6 14:31:01 PDT 2008  Valient Gough <vgough@pobox.com>
 	* minor fixes for Windows compile
-
-Fri Jun  6 14:16:04 PDT 2008  Valient Gough <vgough@pobox.com>
 	* use inline functions for modifying PublishLoc
-
-Fri Jun  6 14:14:17 PDT 2008  Valient Gough <vgough@pobox.com>
 	* add PublishLoc destructor.  Struct initialization check hidden in
 	  out-of-band code.
+	* move enable flag to separate data segment for better cache locality
+	* minor code cleanup for enabled flag
 
 Fri Jun  6 13:45:00 PDT 2008  Valient Gough <vgough@pobox.com>
 	* move enable flag to separate data segment for better cache locality

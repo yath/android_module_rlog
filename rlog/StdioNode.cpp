@@ -219,7 +219,7 @@ StdioNode::publish( const RLogData &data )
 #ifndef _WIN32
     if (outputThreadId) {
         char tid[16] = "";
-        snprintf(tid,15,"%lu",pthread_self());
+        snprintf(tid,15,"%p",pthread_self());
         ss << "[tid:" << tid << "] ";
     }
 #endif
